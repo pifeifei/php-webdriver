@@ -31,8 +31,11 @@ $capabilities = DesiredCapabilities::chrome();
 $driver = RemoteWebDriver::create($host, $capabilities, 5000);
 
 // navigate to 'http://www.seleniumhq.org/'
-$driver->get('https://www.seleniumhq.org/');
+// $url = 'https://www.seleniumhq.org/';
+$url = 'https://www.sogou.com/';
+$driver->get($url);
 
+echo '<pre>';
 // adding cookie
 $driver->manage()->deleteAllCookies();
 
@@ -44,14 +47,18 @@ print_r($cookies);
 
 // click the link 'About'
 $link = $driver->findElement(
-    WebDriverBy::id('menu_about')
+    // WebDriverBy::id('menu_about')
+    WebDriverBy::id('news')
 );
 $link->click();
 
 // wait until the page is loaded
 $driver->wait()->until(
-    WebDriverExpectedCondition::titleContains('About')
+    WebDriverExpectedCondition::titleContains('搜狗新闻')
 );
+//$driver->wait()->until(
+// WebDriverExpectedCondition::titleContains('About')
+//);
 
 // print the title of the current page
 echo "The title is '" . $driver->getTitle() . "'\n";
@@ -60,16 +67,26 @@ echo "The title is '" . $driver->getTitle() . "'\n";
 echo "The current URI is '" . $driver->getCurrentURL() . "'\n";
 
 // write 'php' in the search box
-$driver->findElement(WebDriverBy::id('q'))
+// $driver->findElement(WebDriverBy::id('q'))
+$driver->findElement(WebDriverBy::id('query'))
     ->sendKeys('php') // fill the search box
     ->submit(); // submit the whole form
 
 // wait at most 10 seconds until at least one result is shown
 $driver->wait(10)->until(
-    WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
-        WebDriverBy::className('gsc-result')
-    )
+    WebDriverExpectedCondition::titleContains('php')
 );
+//$driver->wait(10)->until(
+// WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
+// 	WebDriverBy::className('gsc-result')
+// )
+//);
+
+// print the title of the current page
+echo "The title is '" . $driver->getTitle() . "'\n";
+
+// print the URI of the current page
+echo "The current URI is '" . $driver->getCurrentURL() . "'\n";
 
 // close the browser
 $driver->quit();
